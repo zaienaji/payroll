@@ -22,7 +22,7 @@ public class TaxCalculatorApp {
 	try {
 	    TaxDimension taxDimension = collectTaskDimensionFromUser(scanner);
 	    BigDecimal basicPay = collectSalaryMeasurementFromUser(scanner);
-
+	    
 	    SalaryBuilder salaryBuilder = new SalaryBuilder(taxDimension);
 	    salaryBuilder.recurringPay(basicPay);
 
@@ -59,14 +59,14 @@ public class TaxCalculatorApp {
 	System.out.println("type your tax id (NPWP), or left it blank if you don't have it:");
 	String npwp = scanner.next();
 		
-	System.out.println("are your income tax paid by your employeer? Y/N");
-	String isPaidByEmployeer = scanner.next();
+	System.out.println("are your income tax paid by your employer? Y/N");
+	String isPaidByEmployer = scanner.next();
 	
 	return new TaxDimension(
 		isMarried.equalsIgnoreCase("Y") ? true : false,
 		numberofChild,
 		npwp,
-		isPaidByEmployeer.equalsIgnoreCase("Y") ? true : false,
+		isPaidByEmployer.equalsIgnoreCase("Y") ? true : false,
 		TaxCalculationType.Standard);
 	
     }

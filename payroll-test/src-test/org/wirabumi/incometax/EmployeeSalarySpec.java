@@ -91,6 +91,8 @@ class EmployeeSalarySpec {
 		// 	     basic pay	non recurring	expected NPWP 		paid by employer  paid in advance  Tax calculation type
 		Arguments.of(10000000,	5000000, 	21000,   "some npwp",	false,		  175000, 	   TaxCalculationType.NonRecurringOnly),
 		Arguments.of(120000000,	0,		175000,	 "some npwp",	false,		  1925000,	   TaxCalculationType.YearEnd));
+	
+	//TODO add test case: paid by employer Y 
     }
     
     @ParameterizedTest
@@ -100,12 +102,12 @@ class EmployeeSalarySpec {
 	    int nonRecurringPay,
 	    long expectedIncomeTax,
 	    String npwp,
-	    boolean isPaidByEmployeer,
+	    boolean isPaidByEmployer,
 	    int taxPaidInAdvance,
 	    TaxCalculationType taxCalculationType) 
 		    throws ContractException, OperationsException {
 
-	TaxDimension taxDimension = new TaxDimension(true, 3, npwp, isPaidByEmployeer, taxCalculationType);
+	TaxDimension taxDimension = new TaxDimension(true, 3, npwp, isPaidByEmployer, taxCalculationType);
 	SalaryBuilder salaryBuilder = new SalaryBuilder(taxDimension);
 	salaryBuilder
 		.recurringPay(new BigDecimal(basicPay))

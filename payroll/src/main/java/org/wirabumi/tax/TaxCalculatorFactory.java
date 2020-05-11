@@ -5,15 +5,15 @@ import org.wirabumi.payroll.algorithm.BinarySearch;
 public class TaxCalculatorFactory {
 
     public TaxCalculator create(TaxDimension taxDimension) {
-	
-	TaxCalculator taxCalculator;
+	return new NoNpwpTaxCalculator(
+		getTaxCalculatorByDimension(taxDimension), 
+		taxDimension.getNpwp());
+    }
 
-	if (taxDimension.isPaidByEmployeer())
-	    taxCalculator = new NetTaxCalculator(new BinarySearch());
+    private TaxCalculator getTaxCalculatorByDimension(TaxDimension taxDimension) {
+	if (taxDimension.isPaidByEmployer())
+	    return new NetTaxCalculator(new BinarySearch());
 	else
-	    taxCalculator = new GrossTaxCalculator();
-	
-	return new NoNpwpTaxCalculator(taxCalculator, taxDimension.getNpwp());
-	
+	    return new GrossTaxCalculator();
     }
 }

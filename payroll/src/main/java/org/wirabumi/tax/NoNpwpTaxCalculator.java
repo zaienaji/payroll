@@ -23,17 +23,14 @@ public class NoNpwpTaxCalculator extends TaxCalculatorDecorator {
     @Override
     public BigDecimal calculateIncomeTax(TaxDimension taxDimension, BigDecimal grossIncome)
 	    throws OperationsException, ContractException {
+	BigDecimal incomeTax = super.calculateIncomeTax(taxDimension, grossIncome);
 	
-	if (Strings.isNullOrEmpty(npwp)) {
-	    BigDecimal taxableIncome = super.calculateIncomeTax(taxDimension, grossIncome);
-	    BigDecimal incomeTax = taxableIncome
-		    .multiply(NO_NPWP_PENALTY_TARIFF)
-		    .setScale(-3, RoundingMode.UP);
-	    
-	    return incomeTax;
-	}
+	if (Strings.isNullOrEmpty(npwp))
+	    incomeTax = incomeTax
+	    	.multiply(NO_NPWP_PENALTY_TARIFF)
+	    	.setScale(-3, RoundingMode.UP);
 	
-	return super.calculateIncomeTax(taxDimension, grossIncome);
+	return incomeTax;
     }
 
 }

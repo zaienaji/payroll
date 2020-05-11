@@ -35,7 +35,7 @@ public class BinarySearch {
 	return isFound;
     }
     
-    public void doSearch(Function<BigDecimal, BigDecimal> map, Function<BigDecimal, Boolean> evaluate) throws ContractException, OperationsException {
+    public void run(Function<BigDecimal, BigDecimal> map, Function<BigDecimal, Boolean> evaluate) throws ContractException, OperationsException {
 	
 	Contract.require(map!=null, "map is a mandatory field");
 	Contract.require(evaluate!=null, "evaluate is a mandatory field");
@@ -43,12 +43,14 @@ public class BinarySearch {
 	this.map = map;
 	this.evaluate = evaluate;
 	
-	BigDecimal minSearchRange = calculateMinSearchRange();
-	this.result = binarySearch(minSearchRange, calculateMaxSearch(minSearchRange));
+	BigDecimal minSearchPoint = calculateMinSearchPoint();
+	BigDecimal maxSearchPoint = calculateMaxSearchPoint(minSearchPoint);
+	
+	this.result = doBinarySearch(minSearchPoint, maxSearchPoint);
 	this.isFound = true;
     }
 
-    private BigDecimal calculateMinSearchRange() throws OperationsException {
+    private BigDecimal calculateMinSearchPoint() throws OperationsException {
 	BigDecimal minSearchRange = BigDecimal.ONE;
 	
 	for (int i=0; i<MAX_ITERATION ; i++) {
@@ -62,7 +64,7 @@ public class BinarySearch {
 	throw new OperationsException(String.format("can nof find upperbound until %d iteration", MAX_ITERATION));
     }
 
-    private BigDecimal calculateMaxSearch(BigDecimal min) throws OperationsException {
+    private BigDecimal calculateMaxSearchPoint(BigDecimal min) throws OperationsException {
 
 	BigDecimal incomeTax = map.apply(min);
 	BigDecimal minGap = min.subtract(incomeTax);
@@ -84,16 +86,16 @@ public class BinarySearch {
 	throw new OperationsException(String.format("can nof find upperbound until %d iteration", MAX_ITERATION));
     }
 
-    private BigDecimal binarySearch(BigDecimal min, BigDecimal max) {
+    private BigDecimal doBinarySearch(BigDecimal min, BigDecimal max) {
 	BigDecimal middle = calculateMiddleBound(min, max);
 
 	if (evaluate.apply(middle))
 	    return middle;
 
 	if (gapSign(min) != gapSign(middle))
-	    return binarySearch(min, middle);
+	    return doBinarySearch(min, middle);
 	
-	return binarySearch(middle, max);
+	return doBinarySearch(middle, max);
     }
 
 }

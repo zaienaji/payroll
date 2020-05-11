@@ -32,7 +32,7 @@ public class NetTaxCalculator extends TaxCalculator {
 	Function<BigDecimal, BigDecimal> map = t -> progressiveIncomeTax(t.add(taxableIncome));
 	Function<BigDecimal, Boolean> evaluate = t -> t.subtract(map.apply(t)).abs().compareTo(EPSILON) <= 0;
 	
-	binarySearch.doSearch(map, evaluate);
+	binarySearch.run(map, evaluate);
 
 	if (binarySearch.isFound())
 	    return binarySearch.getResult();

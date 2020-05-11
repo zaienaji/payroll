@@ -3,3 +3,4 @@
 /.recommenders/
 /.ucdetector_reports/
 *.class
+target/
