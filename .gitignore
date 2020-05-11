@@ -2,3 +2,4 @@
 /.metadata/
 /.recommenders/
 /.ucdetector_reports/
+*.class
