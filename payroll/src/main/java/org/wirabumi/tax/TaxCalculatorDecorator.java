@@ -20,4 +20,9 @@ public class TaxCalculatorDecorator extends TaxCalculator {
 	return wrappee.incomeTax(taxableIncome);
     }
 
+    @Override
+    BigDecimal taxAllowance(BigDecimal taxableIncome) throws OperationsException, ContractException {
+	return wrappee.taxAllowance(taxableIncome);
+    }
+
 }

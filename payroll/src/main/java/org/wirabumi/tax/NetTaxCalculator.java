@@ -1,6 +1,7 @@
 package org.wirabumi.tax;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.function.Function;
 
 import javax.management.OperationsException;
@@ -23,22 +24,19 @@ public class NetTaxCalculator extends TaxCalculator {
     BigDecimal incomeTax(BigDecimal taxableIncome) 
 	    throws OperationsException, ContractException{
 	
-	return searchNetIncomeTax(taxableIncome); 
-    }
-    
-    private BigDecimal searchNetIncomeTax(BigDecimal taxableIncome)
-	    throws ContractException, OperationsException {
-
 	Function<BigDecimal, BigDecimal> map = t -> progressiveIncomeTax(t.add(taxableIncome));
 	Function<BigDecimal, Boolean> evaluate = t -> t.subtract(map.apply(t)).abs().compareTo(EPSILON) <= 0;
 	
 	binarySearch.run(map, evaluate);
 
 	if (binarySearch.isFound())
-	    return binarySearch.getResult();
+	    return binarySearch.getResult().setScale(-3, RoundingMode.UP);
 
-	throw new OperationsException("net tax calculator can not find income tax allowance");
-
+	throw new OperationsException("net tax calculator can not find income tax allowance"); 
     }
-    
+
+    @Override
+    BigDecimal taxAllowance(BigDecimal taxableIncome) throws OperationsException, ContractException {
+	return incomeTax(taxableIncome);
+    }
 }

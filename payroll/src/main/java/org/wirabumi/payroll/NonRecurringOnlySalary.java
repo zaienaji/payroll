@@ -19,14 +19,17 @@ public class NonRecurringOnlySalary extends Salary {
     @Override
     BigDecimal calculateIncomeTax() throws OperationsException, ContractException {
 	
-	BigDecimal grossIncome = getRecurringPay().multiply(MONTHS_IN_A_YEAR).add(getNonRecurringPay());
-	
-	BigDecimal yearlyIncomeTax = taxCalculator.calculateIncomeTax(taxDimension, grossIncome);
+	BigDecimal yearlyIncomeTax = taxCalculator.calculateIncomeTax(taxDimension, grossIncome());
 	BigDecimal monthlyIncomeTax = yearlyIncomeTax.divide(MONTHS_IN_A_YEAR, -3, RoundingMode.UP);
 	
 	BigDecimal taxForNonRecurringOnly = monthlyIncomeTax.subtract(getTaxPaidInAdvance()); 
 	
 	return taxForNonRecurringOnly;
+    }
+
+    @Override
+    BigDecimal grossIncome() {
+	return getRecurringPay().multiply(MONTHS_IN_A_YEAR).add(getNonRecurringPay());
     }
 
 }

@@ -1,6 +1,7 @@
 package org.wirabumi.payroll;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.management.OperationsException;
 
@@ -14,7 +15,7 @@ public abstract class Salary {
     protected final TaxDimension taxDimension;
     protected final TaxCalculator taxCalculator;
     protected BigDecimal incomeTax;
-    protected boolean isIncomeTaxCalculated;
+    protected boolean isCalculated;
 
     private BigDecimal recurringPay;
     private BigDecimal nonRecurringPay;
@@ -23,6 +24,8 @@ public abstract class Salary {
     private BigDecimal accumulatedPrevNonRecurringPay;
     
     private BigDecimal taxPaidInAdvance;
+    
+    private BigDecimal taxAllowance;
     
     protected static final BigDecimal MONTHS_IN_A_YEAR = new BigDecimal(12);
     
@@ -45,8 +48,13 @@ public abstract class Salary {
 	
 	taxPaidInAdvance = BigDecimal.ZERO;
 	incomeTax = BigDecimal.ZERO;
-	isIncomeTaxCalculated = false;
+	isCalculated = false;
+	taxAllowance = BigDecimal.ZERO;
 
+    }
+    
+    public BigDecimal getTaxAllowance() {
+        return taxAllowance;
     }
 
     public BigDecimal getRecurringPay() {
@@ -70,7 +78,7 @@ public abstract class Salary {
     }
 
     public boolean isIncomeTaxCalculated() {
-	return isIncomeTaxCalculated;
+	return isCalculated;
     }
     
     public BigDecimal getTaxPaidInAdvance() {
@@ -100,11 +108,18 @@ public abstract class Salary {
     public void recalculateIncomeTax() throws OperationsException, ContractException {
 	
 	incomeTax = calculateIncomeTax();
-	isIncomeTaxCalculated = true;
+	taxAllowance = calculateTaxAllowance();
+	isCalculated = true;
 
     }
-
+    
+    BigDecimal calculateTaxAllowance() throws OperationsException, ContractException {
+	BigDecimal yearlyTaxAllowance = taxCalculator.calculateTaxAllowance(taxDimension, grossIncome());
+	return yearlyTaxAllowance.divide(MONTHS_IN_A_YEAR, -3, RoundingMode.UP);
+    }
     
     abstract BigDecimal calculateIncomeTax() throws OperationsException, ContractException;
+    
+    abstract BigDecimal grossIncome();
 
 }

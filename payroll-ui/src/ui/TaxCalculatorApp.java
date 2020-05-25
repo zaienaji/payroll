@@ -9,7 +9,9 @@ import javax.management.OperationsException;
 import org.wirabumi.common.ContractException;
 import org.wirabumi.payroll.Salary;
 import org.wirabumi.payroll.SalaryBuilder;
+import org.wirabumi.payroll.SalaryFactory;
 import org.wirabumi.tax.TaxCalculationType;
+import org.wirabumi.tax.TaxCalculatorFactory;
 import org.wirabumi.tax.TaxDimension;
 
 @SuppressWarnings("ucd")
@@ -23,7 +25,7 @@ public class TaxCalculatorApp {
 	    TaxDimension taxDimension = collectTaskDimensionFromUser(scanner);
 	    BigDecimal basicPay = collectSalaryMeasurementFromUser(scanner);
 	    
-	    SalaryBuilder salaryBuilder = new SalaryBuilder(taxDimension);
+	    SalaryBuilder salaryBuilder = new SalaryBuilder(taxDimension, new SalaryFactory(), new TaxCalculatorFactory() );
 	    salaryBuilder.recurringPay(basicPay);
 
 	    Salary zaien = salaryBuilder.build();

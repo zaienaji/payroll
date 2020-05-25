@@ -9,8 +9,8 @@ import org.wirabumi.tax.TaxDimension;
 
 public class SalaryBuilder {
     
-    private static final SalaryFactory salaryFactory = new SalaryFactory();
-    private static final TaxCalculatorFactory taxCalculatorFactory = new TaxCalculatorFactory();
+    private final SalaryFactory salaryFactory;
+    private final TaxCalculatorFactory taxCalculatorFactory;
     
     private final TaxDimension taxDimension;
     
@@ -23,9 +23,12 @@ public class SalaryBuilder {
     
     private BigDecimal taxPaidInAdvance;
     
-    public SalaryBuilder(TaxDimension taxDimension) {
+    public SalaryBuilder(TaxDimension taxDimension, SalaryFactory salaryFactory, TaxCalculatorFactory taxCalculatorFactory) {
 	super();
 	this.taxDimension = taxDimension;
+	
+	this.salaryFactory = salaryFactory;
+	this.taxCalculatorFactory = taxCalculatorFactory;
 	
 	init();
     }

@@ -1,6 +1,7 @@
 package org.wirabumi.tax;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -95,16 +96,21 @@ public abstract class TaxCalculator {
 	    rest = layer.min;
 	}
 	
-	return result;
+	return result.setScale(-3, RoundingMode.UP);
     }
     
     BigDecimal calculateTaxableIncome(TaxDimension taxDimension,
 	    BigDecimal grossIncome)
 	    throws ContractException {
 
-	return grossIncome
+	BigDecimal taxableIncome = grossIncome
 		.subtract(positionCost(grossIncome))
 		.subtract(nonTaxableIncome(taxDimension));
+	
+	Contract.require(taxableIncome.compareTo(MAX_INCOME)<=0, 
+		"taxable income reach max income supported in this tax calculator");
+	
+	return taxableIncome;
 
     }
     
@@ -116,11 +122,20 @@ public abstract class TaxCalculator {
 	
 	BigDecimal taxableIncome = calculateTaxableIncome(taxDimension, grossIncome);
 	
-	Contract.require(taxableIncome.compareTo(MAX_INCOME)<=0, 
-		"taxable income reach max income supported in this tax calculator");
-	
 	return incomeTax(taxableIncome);
     }
+    
+    public BigDecimal calculateTaxAllowance(TaxDimension taxDimension, BigDecimal grossIncome) 
+	    throws ContractException, OperationsException {
+	
+	BigDecimal taxableIncome = calculateTaxableIncome(taxDimension, grossIncome);
+	
+	return taxAllowance(taxableIncome);
+	
+    }
+    
+    abstract BigDecimal taxAllowance(BigDecimal taxableIncome) 
+	    throws OperationsException, ContractException;
 
     private class PtkpKey {
 

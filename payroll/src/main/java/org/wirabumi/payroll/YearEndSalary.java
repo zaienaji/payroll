@@ -18,24 +18,25 @@ public class YearEndSalary extends Salary {
 
     @Override
     BigDecimal calculateIncomeTax() throws OperationsException, ContractException {
-	
-	BigDecimal grossIncome = getRecurringPay()
-		.add(getNonRecurringPay())
-		.add(getAccumulatedPrevRecurringPay())
-		.add(getAccumulatedPrevNonRecurringPay());
-		
-	BigDecimal incomeTax = taxCalculator.calculateIncomeTax(taxDimension, grossIncome);
+	BigDecimal incomeTax = taxCalculator.calculateIncomeTax(taxDimension, grossIncome());
 	return incomeTax.subtract(getTaxPaidInAdvance());
     }
     
     @Override
     public void recalculateIncomeTax() throws OperationsException, ContractException {
 	BigDecimal yearlyIncomeTax = calculateIncomeTax();
-	
 	incomeTax = yearlyIncomeTax.setScale(-3, RoundingMode.UP);
-	
-	isIncomeTaxCalculated = true;
-	
+	isCalculated = true;
     }
 
+    @Override
+    BigDecimal grossIncome() {
+	return getRecurringPay()
+		.add(getNonRecurringPay())
+		.add(getAccumulatedPrevRecurringPay())
+		.add(getAccumulatedPrevNonRecurringPay());
+    }
+    
+    //TODO override calculateTaxAllowance
+    
 }
